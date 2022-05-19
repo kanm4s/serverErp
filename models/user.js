@@ -120,3 +120,25 @@ module.export = (sequelize, DataTypes) => {
 
     return Employee;
 };
+
+// link to Goodjob note
+User.associate = (models) => {
+    User.hasMany(models.GoodjobNote, {
+        foreignKey: {
+            allowNull: false,
+            name: "senderId",
+        },
+        onDelete: "RESTRICT",
+        onUpdate: "RESTRICT",
+    });
+};
+User.associate = (models) => {
+    User.hasMany(models.GoodjobNote, {
+        foreignKey: {
+            allowNull: false,
+            name: "receiverId",
+        },
+        onDelete: "RESTRICT",
+        onUpdate: "RESTRICT",
+    });
+};
