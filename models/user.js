@@ -2,6 +2,13 @@ module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
     "User",
     {
+      userName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
       firstName: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -34,24 +41,15 @@ module.exports = (sequelize, DataTypes) => {
       },
       position: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-        },
       },
       phoneNumber: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+        type: DataTypes.STRING,
         validate: {
           notEmpty: true,
         },
       },
       email: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-        },
       },
       team: {
         type: DataTypes.STRING,

@@ -1,6 +1,6 @@
 {
   "development": {
-    "username": "DB",
+    "username": "root",
     "password": "Agoh6DOH",
     "database": "erp_db",
     "host": "127.0.0.1",
