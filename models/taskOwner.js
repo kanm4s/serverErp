@@ -1,8 +1,8 @@
-module.export = (sequelize, DataTypes) => {
+module.exports = (sequelize, DataTypes) => {
   const TaskOwner = sequelize.define("TaskOwner", {});
 
   TaskOwner.associate = (models) => {
-    TaskOwner.belongTo(models.Task, {
+    TaskOwner.belongsTo(models.Task, {
       foreignKey: {
         allowNull: false,
         name: "projectId",
@@ -13,7 +13,7 @@ module.export = (sequelize, DataTypes) => {
   };
 
   TaskOwner.associate = (models) => {
-    TaskOwner.belongTo(models.User, {
+    TaskOwner.belongsTo(models.User, {
       foreignKey: {
         allowNull: false,
         name: "userId",
@@ -23,5 +23,5 @@ module.export = (sequelize, DataTypes) => {
     });
   };
 
-  return ProjectOwner;
+  return TaskOwner;
 };

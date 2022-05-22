@@ -1,4 +1,4 @@
-module.export = (sequelize, DataTypes) => {
+module.exports = (sequelize, DataTypes) => {
   const Task = sequelize.define(
     "Task",
     {
@@ -53,7 +53,7 @@ module.export = (sequelize, DataTypes) => {
   );
 
   Task.associate = (models) => {
-    Task.belongTo(models.Project, {
+    Task.belongsTo(models.Project, {
       foreignKey: {
         allowNull: false,
         name: "projectId",
@@ -63,5 +63,5 @@ module.export = (sequelize, DataTypes) => {
     });
   };
 
-  return Project;
+  return Task;
 };
