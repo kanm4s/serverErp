@@ -5,6 +5,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const errorMiddleware = require("./middleware/error");
 const userRoute = require("./routes/userRoute");
+const projectRoute = require("./routes/projectRoute");
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/users", userRoute);
+app.use("/projects", projectRoute);
 
 app.use(errorMiddleware);
 
