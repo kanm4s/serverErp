@@ -11,6 +11,7 @@ exports.getAllProject = async (req, res, next) => {
     next(err);
   }
 };
+
 exports.getAllTask = async (req, res, next) => {
   try {
     const allTask = await Task.findAll();
@@ -32,6 +33,7 @@ exports.createProject = async (req, res, next) => {
     if (validator.isEmpty(deadLine + "")) {
       createError("deadLine is required");
     }
+
     const result = await Project.create({ name, clientName, deadLine, brief });
 
     res.json({ message: "Create project done", project: result });

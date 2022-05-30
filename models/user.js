@@ -54,6 +54,9 @@ module.exports = (sequelize, DataTypes) => {
       team: {
         type: DataTypes.STRING,
       },
+      profileImage: {
+        type: DataTypes.STRING,
+      },
     },
     {
       underscored: true,
