@@ -30,9 +30,6 @@ exports.register = async (req, res, next) => {
     if (validator.isEmpty(password + "")) {
       createError("Password is required", 400);
     }
-    if (!validator.isEmail(email + "")) {
-      createError("email is required or not correct", 400);
-    }
 
     if (password !== confirmPassword) {
       createError("password did not match", 400);
@@ -41,7 +38,7 @@ exports.register = async (req, res, next) => {
     const hashed = await bcrypt.hash(password, 10);
     console.log(hashed);
 
-    const user = await User.create({
+    await User.create({
       firstName,
       lastName,
       userName,
@@ -52,7 +49,7 @@ exports.register = async (req, res, next) => {
       phoneNumber,
     });
 
-    res.json(user);
+    res.status(200).json({ message: "Signup success" });
   } catch (err) {
     next(err);
   }
