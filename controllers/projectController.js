@@ -1,7 +1,6 @@
 const validator = require("validator");
 const createError = require("../utils/createError");
-const { Project } = require("../models");
-const { Task } = require("../models");
+const { Task, ProjectOwner, Project } = require("../models");
 
 exports.getAllProject = async (req, res, next) => {
   try {
@@ -22,6 +21,7 @@ exports.getAllTask = async (req, res, next) => {
 };
 
 exports.createProject = async (req, res, next) => {
+  const { id } = req.user;
   try {
     const { name, clientName, deadLine, brief } = req.body;
     if (validator.isEmpty(name + "")) {
@@ -35,8 +35,16 @@ exports.createProject = async (req, res, next) => {
     }
 
     const result = await Project.create({ name, clientName, deadLine, brief });
+    const result_project_owner = await ProjectOwner.create({
+      projectId: result.id,
+      userId: id,
+    });
 
-    res.json({ message: "Create project done", project: result });
+    res.json({
+      message: "Create project done",
+      project: result,
+      project_owner: result_project_owner,
+    });
   } catch (err) {
     next(err);
   }
