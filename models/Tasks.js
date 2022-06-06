@@ -33,18 +33,12 @@ module.exports = (sequelize, DataTypes) => {
       workingStatus: {
         type: DataTypes.ENUM,
         values: ["active", "waiting", "done"],
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-        },
+        defaultValue: "waiting",
       },
       priority: {
         type: DataTypes.ENUM,
         values: ["high", "normal", "low"],
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-        },
+        defaultValue: "normal",
       },
     },
     {
@@ -61,7 +55,19 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "RESTRICT",
       onUpdate: "RESTRICT",
     });
+    Task.hasMany(models.TaskOwner, {
+      foreignKey: {
+        allowNull: false,
+        name: "taskId",
+      },
+      onDelete: "RESTRICT",
+      onUpdate: "RESTRICT",
+    });
   };
+
+  // Task.associate = (models) => {
+
+  // };
 
   return Task;
 };

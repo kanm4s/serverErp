@@ -67,6 +67,7 @@ module.exports = (sequelize, DataTypes) => {
   // link to EmailBox
   User.associate = (models) => {
     User.hasMany(models.EmailBox, {
+      as: "sender",
       foreignKey: {
         allowNull: false,
         name: "senderId",
@@ -74,9 +75,8 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "RESTRICT",
       onUpdate: "RESTRICT",
     });
-  };
-  User.associate = (models) => {
     User.hasMany(models.EmailBox, {
+      as: "receiver",
       foreignKey: {
         allowNull: false,
         name: "receiverId",
@@ -89,6 +89,7 @@ module.exports = (sequelize, DataTypes) => {
   // link to chatlog
   User.associate = (models) => {
     User.hasMany(models.ChatLog, {
+      as: "sender",
       foreignKey: {
         allowNull: false,
         name: "senderId",
@@ -96,9 +97,8 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "RESTRICT",
       onUpdate: "RESTRICT",
     });
-  };
-  User.associate = (models) => {
     User.hasMany(models.ChatLog, {
+      as: "receiver",
       foreignKey: {
         allowNull: false,
         name: "receiverId",
@@ -125,7 +125,15 @@ module.exports = (sequelize, DataTypes) => {
     User.hasMany(models.TaskOwner, {
       foreignKey: {
         allowNull: false,
-        name: "userId",
+        name: "receiverId",
+      },
+      onDelete: "RESTRICT",
+      onUpdate: "RESTRICT",
+    });
+    User.hasMany(models.TaskOwner, {
+      foreignKey: {
+        allowNull: false,
+        name: "senderId",
       },
       onDelete: "RESTRICT",
       onUpdate: "RESTRICT",
@@ -142,8 +150,6 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "RESTRICT",
       onUpdate: "RESTRICT",
     });
-  };
-  User.associate = (models) => {
     User.hasMany(models.GoodjobNote, {
       foreignKey: {
         allowNull: false,
@@ -153,6 +159,9 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: "RESTRICT",
     });
   };
+  // User.associate = (models) => {
+
+  // };
 
   return User;
 };

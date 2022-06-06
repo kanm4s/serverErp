@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   ChatLog.associate = (models) => {
-    ChatLog.belongTo(models.User, {
+    ChatLog.belongsTo(models.User, {
+      as: "sender",
       foreignKey: {
         allowNull: false,
         name: "senderId",
@@ -24,10 +25,8 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "RESTRICT",
       onUpdate: "RESTRICT",
     });
-  };
-
-  ChatLog.associate = (models) => {
     ChatLog.belongsTo(models.User, {
+      as: "receiver",
       foreignKey: {
         allowNull: false,
         name: "receiverId",

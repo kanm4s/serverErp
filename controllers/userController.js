@@ -14,3 +14,12 @@ exports.getMe = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getAllUser = async (req, res, next) => {
+  try {
+    const Users = await User.findAll();
+    res.json({ Users });
+  } catch (err) {
+    next(err);
+  }
+};

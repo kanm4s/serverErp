@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     TaskOwner.belongsTo(models.Task, {
       foreignKey: {
         allowNull: false,
-        name: "projectId",
+        name: "taskId",
       },
       onDelete: "RESTRICT",
       onUpdate: "RESTRICT",
@@ -16,7 +16,15 @@ module.exports = (sequelize, DataTypes) => {
     TaskOwner.belongsTo(models.User, {
       foreignKey: {
         allowNull: false,
-        name: "userId",
+        name: "receiverId",
+      },
+      onDelete: "RESTRICT",
+      onUpdate: "RESTRICT",
+    });
+    TaskOwner.belongsTo(models.User, {
+      foreignKey: {
+        allowNull: false,
+        name: "senderId",
       },
       onDelete: "RESTRICT",
       onUpdate: "RESTRICT",

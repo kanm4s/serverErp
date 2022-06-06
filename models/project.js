@@ -41,7 +41,19 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "RESTRICT",
       onUpdate: "RESTRICT",
     });
+    Project.hasMany(models.Task, {
+      foreignKey: {
+        allowNull: false,
+        name: "projectId",
+      },
+      onDelete: "RESTRICT",
+      onUpdate: "RESTRICT",
+    });
   };
+
+  // Project.associate = (models) => {
+
+  // };
 
   return Project;
 };

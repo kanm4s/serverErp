@@ -25,9 +25,6 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "RESTRICT",
       onUpdate: "RESTRICT",
     });
-  };
-
-  GoodjobNote.associate = (models) => {
     GoodjobNote.belongsTo(models.User, {
       foreignKey: {
         allowNull: false,
@@ -37,6 +34,8 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: "RESTRICT",
     });
   };
+
+  // GoodjobNote.associate = (models) => {};
 
   return GoodjobNote;
 };

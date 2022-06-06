@@ -8,6 +8,7 @@ const userRoute = require("./routes/userRoute");
 const projectRoute = require("./routes/projectRoute");
 const authorization = require("./middleware/authorization");
 const authRoute = require("./routes/authRoute");
+const commuController = require("./routes/commuRoute");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/auths", authRoute);
 app.use("/users", authorization, userRoute);
 app.use("/projects", authorization, projectRoute);
+app.use("/communicates", authorization, commuController);
 
 app.use(errorMiddleware);
 
