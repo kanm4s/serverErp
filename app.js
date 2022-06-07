@@ -37,7 +37,7 @@ app.use("/communicates", authorization, commuController);
 
 app.use(errorMiddleware);
 
-app.use("/api/vi/hello", socketIOMiddleware, (req, res) => {
+app.use("/api/vi/hello", authorization, socketIOMiddleware, (req, res) => {
   req.io.emit("message", `Hello, ${req.originalUrl}`);
   res.send("hello world");
 });
