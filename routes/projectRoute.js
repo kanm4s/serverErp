@@ -4,7 +4,6 @@ const projectController = require("../controllers/projectController");
 const router = express.Router();
 
 router.get("/", projectController.getAllProject);
-router.get("/:projectId", projectController.getProjectId);
 router.get("/tasks", projectController.getAllTask);
 router.get("/tasks/:id", projectController.getTaskById);
 router.get(
@@ -13,6 +12,7 @@ router.get(
   projectController.getTasksByProjectId
 );
 router.post("/createProject", projectController.createProject);
+router.get("/:projectId", projectController.getProjectId);
 router.patch("/:projectId", projectController.editProjectById);
 router.post(
   "/createTask/:projectId",

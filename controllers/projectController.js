@@ -14,7 +14,6 @@ exports.getAllProject = async (req, res, next) => {
 exports.getProjectId = async (req, res, next) => {
   try {
     const { projectId } = req.params;
-    console.log(projectId);
     const project = await Project.findOne({ where: { id: projectId } });
     res.json({ project });
   } catch (err) {

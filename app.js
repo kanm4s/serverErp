@@ -11,6 +11,17 @@ const authRoute = require("./routes/authRoute");
 const commuController = require("./routes/commuRoute");
 
 const app = express();
+const http = require("http");
+
+const socketUtils = require("./utils/socketUtils");
+const server = http.createServer(app);
+const io = socketUtils.sio(server);
+socketUtils.connection(io);
+
+const socketIOMiddleware = (req, res, next) => {
+  req.io = io;
+  next();
+};
 
 app.use(cors());
 
@@ -26,6 +37,15 @@ app.use("/communicates", authorization, commuController);
 
 app.use(errorMiddleware);
 
+app.use("/api/vi/hello", socketIOMiddleware, (req, res) => {
+  req.io.emit("message", `Hello, ${req.originalUrl}`);
+  res.send("hello world");
+});
+
 const port = process.env.PORT || 8000;
 
-app.listen(port, () => console.log(`server running on port ${port}`));
+server.listen(port, () => console.log(`server running on port ${port}`));
+
+// server.listen(3000, () => {
+//   console.log("listening on :3000");
+// });
