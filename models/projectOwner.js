@@ -10,9 +10,6 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "RESTRICT",
       onUpdate: "RESTRICT",
     });
-  };
-
-  ProjectOwner.associate = (models) => {
     ProjectOwner.belongsTo(models.User, {
       foreignKey: {
         allowNull: false,
@@ -22,6 +19,17 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: "RESTRICT",
     });
   };
+
+  // ProjectOwner.associate = (models) => {
+  //   ProjectOwner.belongsTo(models.User, {
+  //     foreignKey: {
+  //       allowNull: false,
+  //       name: "userId",
+  //     },
+  //     onDelete: "RESTRICT",
+  //     onUpdate: "RESTRICT",
+  //   });
+  // };
 
   return ProjectOwner;
 };

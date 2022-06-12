@@ -1,6 +1,6 @@
 const socketIO = require("socket.io");
-const jwt = require("jsonwebtoken");
-const authorization = require("../middleware/authorization");
+
+const socketAuthorization = require("../middleware/socketAuthorization");
 
 exports.sio = (server) => {
   return socketIO(server, {
@@ -12,22 +12,12 @@ exports.sio = (server) => {
 };
 
 exports.connection = (io) => {
-  io.use(function (socket, next) {
-    if (socket.handshake.query && socket.handshake.query.token) {
-      jwt.verify(
-        socket.handshake.query.token,
-        process.env.JWT_SECRET_KEY,
-        function (err, decoded) {
-          if (err) return next(new Error("Authentication error"));
-          socket.user = decoded;
-          next();
-        }
-      );
-    }
-  }).on("connection", (socket) => {
+  io.use(socketAuthorization).on("connection", (socket) => {
     console.log(socket.user);
+    console.log(socket.id);
     console.log("A user is connected");
-
+    let clients = io.sockets;
+    // console.log(clients.sockets);
     const users = [];
     for (let [id, socket] of io.of("/").sockets) {
       users.push({
@@ -35,11 +25,29 @@ exports.connection = (io) => {
         username: socket.user.firstName,
       });
     }
+    console.log(users);
     socket.emit("users", users);
 
-    socket.on("message", ({ name, message }) => {
-      console.log(`message from ${name} : ${message}`);
-      io.emit("message", { name, message });
+    socket.join(socket.userID);
+
+    // socket.on("message", ({ content, to }) => {
+    //   socket.to(to).to(socket.userID).emit("private message", {
+    //     content,
+    //     from: socket.userID,
+    //     to,
+    //   });
+    // });
+
+    socket.on("message", ({ userId, receiverName, chat }) => {
+      const receiverId = users.find((ele) => ele.username === receiverName);
+      console.log(receiverId);
+
+      console.log(`message from ${userId} to ${receiverName}: ${chat}`);
+      io.to(receiverId.userID).emit("messageResponse", {
+        userId,
+        receiverName,
+        chat,
+      });
     });
 
     socket.on("disconnect", () => {

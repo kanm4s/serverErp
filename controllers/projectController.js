@@ -1,6 +1,7 @@
 const validator = require("validator");
 const createError = require("../utils/createError");
-const { Task, ProjectOwner, Project, TaskOwner } = require("../models");
+const { Task, ProjectOwner, Project, TaskOwner, User } = require("../models");
+const { Op } = require("sequelize");
 
 exports.getAllProject = async (req, res, next) => {
   try {
@@ -23,8 +24,17 @@ exports.getProjectId = async (req, res, next) => {
 
 exports.getAllTask = async (req, res, next) => {
   try {
-    const allTask = await Task.findAll();
-    res.json({ allTask: allTask });
+    // const allTask = await Task.findAll();
+
+    const taskOwner = await TaskOwner.findAll({
+      include: [
+        { model: Task },
+        { model: User, as: "receiver" },
+        { model: User, as: "sender" },
+      ],
+    });
+
+    res.json({ allTask: taskOwner });
   } catch (err) {
     next(err);
   }
@@ -93,13 +103,37 @@ exports.editProjectById = async (req, res, next) => {
 exports.getTasksByProjectId = async (req, res, next) => {
   try {
     const { projectId } = req.params;
-    const task = await Task.findAll({
-      where: { projectId },
-      include: { model: Project, where: { id: projectId } },
+    console.log(projectId);
+
+    // const task = await Task.findAll({
+    //   where: { projectId },
+    //   include: [{ model: Project, where: { id: projectId } }],
+    // });
+
+    // const result = JSON.parse(JSON.stringify(task));
+
+    // const taskOwner = await TaskOwner.findAll({
+    //   include: [
+    //     { model: Task },
+    //     { model: User, as: "receiver" },
+    //     { model: User, as: "sender" },
+    //   ],
+    // });
+
+    const taskOwner = await TaskOwner.findAll({
+      // attributes: ["receiverId"],
+      include: [
+        { model: Task, where: { projectId }, include: [{ model: Project }] },
+        { model: User, as: "receiver", attributes: ["firstName"] },
+        {
+          model: User,
+          as: "sender",
+          attributes: ["userName", "firstName", "lastName"],
+        },
+      ],
     });
-    const projectOwner = await ProjectOwner.findAll({ where: { projectId } });
-    // task.ProjectOwner = projectOwner;
-    res.json({ tasks: task });
+
+    res.json({ allTask: taskOwner });
   } catch (err) {
     next(err);
   }
@@ -127,6 +161,7 @@ exports.getProjectById = async (req, res, next) => {
 
 exports.createTask = async (req, res, next) => {
   try {
+    const { id } = req.user;
     const {
       name,
       deadLine,
@@ -160,7 +195,12 @@ exports.createTask = async (req, res, next) => {
       projectId,
     });
 
-    res.json({ message: "Create tasks done", Task: result });
+    const taskToId = await TaskOwner.create({
+      taskId: result.id,
+      senderId: id,
+    });
+
+    res.json({ message: "Create tasks done", Task: result, taskToId });
   } catch (err) {
     next(err);
   }
@@ -171,10 +211,60 @@ exports.editTaskById = async (req, res, next) => {
     const { id } = req.params;
     const { name, type, deadLine, brief } = req.body;
     const task = await Task.update(
-      { name, type, brief, deadLine },
+      { name, type, brief, deadLine, workingStatus },
       { where: { id } }
     );
     res.json({ message: `update task id number ${task} done` });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.editTaskWorkingStatusById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { workingStatus } = req.body;
+    const task = await Task.update({ workingStatus }, { where: { id } });
+    res.json({ message: `update task id number ${task} done` });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getTaskReceiverByUserId = async (req, res, next) => {
+  try {
+    const { id } = req.user;
+    const tasks = await TaskOwner.findAll({
+      where: { receiverId: id },
+      attributes: ["id"],
+      include: [
+        {
+          model: Task,
+          where: {
+            [Op.or]: [
+              { workingStatus: "waiting" },
+              { workingStatus: "active" },
+            ],
+          },
+          include: [{ model: Project }],
+        },
+        { model: User, as: "receiver", attributes: ["firstName"] },
+        { model: User, as: "sender", attributes: ["firstName"] },
+      ],
+    });
+    res.json({ tasks });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getProjectProgress = async (req, res, next) => {
+  try {
+    const allProjectandTask = await Project.findAll({
+      attributes: ["id", "name", "deadLine"],
+      include: [{ model: Task, attributes: ["id", "workingStatus"] }],
+    });
+    res.json({ allProjectandTask });
   } catch (err) {
     next(err);
   }

@@ -37,10 +37,10 @@ app.use("/communicates", authorization, commuController);
 
 app.use(errorMiddleware);
 
-app.use("/api/vi/hello", authorization, socketIOMiddleware, (req, res) => {
-  req.io.emit("message", `Hello, ${req.originalUrl}`);
-  res.send("hello world");
-});
+// app.use("/api/vi/hello", socketIOMiddleware, (req, res) => {
+//   req.io.emit("message", `Hello, ${req.originalUrl}`);
+//   res.send("hello world");
+// });
 
 const port = process.env.PORT || 8000;
 

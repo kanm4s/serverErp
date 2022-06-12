@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
 
   GoodjobNote.associate = (models) => {
     GoodjobNote.belongsTo(models.User, {
+      as: "sender",
       foreignKey: {
         allowNull: false,
         name: "senderId",
@@ -26,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: "RESTRICT",
     });
     GoodjobNote.belongsTo(models.User, {
+      as: "receiver",
       foreignKey: {
         allowNull: false,
         name: "receiverId",

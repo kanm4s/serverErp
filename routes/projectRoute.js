@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.get("/", projectController.getAllProject);
 router.get("/tasks", projectController.getAllTask);
+router.get("/tasks/getTaskByUserId", projectController.getTaskReceiverByUserId);
+router.get("/getProjectProgress", projectController.getProjectProgress);
 router.get("/tasks/:id", projectController.getTaskById);
 router.get(
   "/:projectId/tasks",
@@ -20,6 +22,10 @@ router.post(
   projectController.createTask
 );
 router.patch("/tasks/:id", projectController.editTaskById);
+router.patch(
+  "/tasks/wokingStatus/:id",
+  projectController.editTaskWorkingStatusById
+);
 router.post("/tasks/delegate", projectController.delegateTaskToId);
 
 module.exports = router;

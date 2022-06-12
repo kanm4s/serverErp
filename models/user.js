@@ -123,6 +123,7 @@ module.exports = (sequelize, DataTypes) => {
   // link to task-owner
   User.associate = (models) => {
     User.hasMany(models.TaskOwner, {
+      as: "receiver",
       foreignKey: {
         allowNull: false,
         name: "receiverId",
@@ -131,6 +132,7 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: "RESTRICT",
     });
     User.hasMany(models.TaskOwner, {
+      as: "sender",
       foreignKey: {
         allowNull: false,
         name: "senderId",
@@ -143,6 +145,7 @@ module.exports = (sequelize, DataTypes) => {
   // link to Goodjob note
   User.associate = (models) => {
     User.hasMany(models.GoodjobNote, {
+      as: "sender",
       foreignKey: {
         allowNull: false,
         name: "senderId",
@@ -151,6 +154,7 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: "RESTRICT",
     });
     User.hasMany(models.GoodjobNote, {
+      as: "receiver",
       foreignKey: {
         allowNull: false,
         name: "receiverId",
