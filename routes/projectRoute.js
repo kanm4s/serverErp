@@ -10,6 +10,11 @@ router.get("/tasks/getAvailableTasks", projectController.getAvailableTasks);
 
 router.get("/getProjectProgress", projectController.getProjectProgress);
 router.get("/getAllWorkingTasks", projectController.getAllWorkingTasks);
+router.get(
+  "/getProgressDetailByProject",
+  projectController.getProgressDetailByProject
+);
+
 router.get("/tasks/:id", projectController.getTaskById);
 router.get(
   "/:projectId/tasks",
@@ -28,6 +33,14 @@ router.patch("/tasks/:id", projectController.editTaskById);
 router.patch(
   "/tasks/wokingStatus/:id",
   projectController.editTaskWorkingStatusById
+);
+router.patch(
+  "/tasks/addSpecialNoteById/:id",
+  projectController.addSpecialNoteById
+);
+router.get(
+  "/tasks/addSpecialNoteById/:id",
+  projectController.getSpecialNoteById
 );
 router.post("/tasks/delegate", projectController.delegateTaskToId);
 

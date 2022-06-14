@@ -2,7 +2,6 @@ const validator = require("validator");
 const createError = require("../utils/createError");
 const { Task, ProjectOwner, Project, TaskOwner, User } = require("../models");
 const { Op } = require("sequelize");
-const res = require("express/lib/response");
 
 exports.getAllProject = async (req, res, next) => {
   try {
@@ -25,13 +24,19 @@ exports.getProjectId = async (req, res, next) => {
 
 exports.getAllTask = async (req, res, next) => {
   try {
-    // const allTask = await Task.findAll();
-
     const taskOwner = await TaskOwner.findAll({
       include: [
         { model: Task },
-        { model: User, as: "receiverTaskOwner" },
-        { model: User, as: "senderTaskOwner" },
+        {
+          model: User,
+          as: "receiverTaskOwner",
+          attributes: { exclude: ["password", "createdAt", "updatedAt"] },
+        },
+        {
+          model: User,
+          as: "senderTaskOwner",
+          attributes: { exclude: ["password", "createdAt", "updatedAt"] },
+        },
       ],
     });
 
@@ -104,25 +109,8 @@ exports.editProjectById = async (req, res, next) => {
 exports.getTasksByProjectId = async (req, res, next) => {
   try {
     const { projectId } = req.params;
-    console.log(projectId);
-
-    // const task = await Task.findAll({
-    //   where: { projectId },
-    //   include: [{ model: Project, where: { id: projectId } }],
-    // });
-
-    // const result = JSON.parse(JSON.stringify(task));
-
-    // const taskOwner = await TaskOwner.findAll({
-    //   include: [
-    //     { model: Task },
-    //     { model: User, as: "receiver" },
-    //     { model: User, as: "sender" },
-    //   ],
-    // });
 
     const taskOwner = await TaskOwner.findAll({
-      // attributes: ["receiverId"],
       include: [
         { model: Task, where: { projectId }, include: [{ model: Project }] },
         { model: User, as: "receiverTaskOwner", attributes: ["firstName"] },
@@ -226,7 +214,32 @@ exports.editTaskWorkingStatusById = async (req, res, next) => {
     const { id } = req.params;
     const { workingStatus } = req.body;
     const task = await Task.update({ workingStatus }, { where: { id } });
-    res.json({ message: `update task id number ${task} done` });
+    res.json({ message: `Update task id number ${task} done` });
+  } catch (err) {
+    next(err);
+  }
+};
+exports.addSpecialNoteById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { specialNote } = req.body;
+    const task = await Task.update(
+      { noteDetail: specialNote },
+      { where: { id } }
+    );
+    res.json({ message: `Update task's specialNote id number ${task} done` });
+  } catch (err) {
+    next(err);
+  }
+};
+exports.getSpecialNoteById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const specialNote = await Task.findOne({
+      where: { id },
+      attributes: ["noteDetail"],
+    });
+    res.json({ specialNote });
   } catch (err) {
     next(err);
   }
@@ -314,6 +327,23 @@ exports.getAllWorkingTasks = async (req, res, next) => {
       where: { workingStatus: "active" },
     });
     res.json({ allWorkingTasks });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getProgressDetailByProject = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const allResource = await Project.findAll({
+      where: { id },
+      include: { model: Task, where: { workingStatus: "active" } },
+    });
+    const allTaskLeft = await Project.findAll({
+      where: { id },
+      include: { model: Task, where: { workingStatus: "active" } },
+    });
+    res.json({ allResource, allTaskLeft });
   } catch (err) {
     next(err);
   }

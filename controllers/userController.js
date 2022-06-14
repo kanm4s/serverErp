@@ -17,7 +17,11 @@ exports.getMe = async (req, res, next) => {
 
 exports.getAllUser = async (req, res, next) => {
   try {
-    const Users = await User.findAll();
+    const Users = await User.findAll({
+      attributes: {
+        exclude: ["password", "createdAt", "updatedAt"],
+      },
+    });
     res.json({ Users });
   } catch (err) {
     next(err);
