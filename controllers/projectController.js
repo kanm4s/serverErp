@@ -2,6 +2,7 @@ const validator = require("validator");
 const createError = require("../utils/createError");
 const { Task, ProjectOwner, Project, TaskOwner, User } = require("../models");
 const { Op } = require("sequelize");
+const res = require("express/lib/response");
 
 exports.getAllProject = async (req, res, next) => {
   try {
@@ -29,8 +30,8 @@ exports.getAllTask = async (req, res, next) => {
     const taskOwner = await TaskOwner.findAll({
       include: [
         { model: Task },
-        { model: User, as: "receiver" },
-        { model: User, as: "sender" },
+        { model: User, as: "receiverTaskOwner" },
+        { model: User, as: "senderTaskOwner" },
       ],
     });
 
@@ -124,10 +125,10 @@ exports.getTasksByProjectId = async (req, res, next) => {
       // attributes: ["receiverId"],
       include: [
         { model: Task, where: { projectId }, include: [{ model: Project }] },
-        { model: User, as: "receiver", attributes: ["firstName"] },
+        { model: User, as: "receiverTaskOwner", attributes: ["firstName"] },
         {
           model: User,
-          as: "sender",
+          as: "senderTaskOwner",
           attributes: ["userName", "firstName", "lastName"],
         },
       ],
@@ -211,7 +212,7 @@ exports.editTaskById = async (req, res, next) => {
     const { id } = req.params;
     const { name, type, deadLine, brief } = req.body;
     const task = await Task.update(
-      { name, type, brief, deadLine, workingStatus },
+      { name, type, brief, deadLine },
       { where: { id } }
     );
     res.json({ message: `update task id number ${task} done` });
@@ -248,11 +249,22 @@ exports.getTaskReceiverByUserId = async (req, res, next) => {
           },
           include: [{ model: Project }],
         },
-        { model: User, as: "receiver", attributes: ["firstName"] },
-        { model: User, as: "sender", attributes: ["firstName"] },
+        { model: User, as: "receiverTaskOwner", attributes: ["firstName"] },
+        { model: User, as: "senderTaskOwner", attributes: ["firstName"] },
       ],
     });
     res.json({ tasks });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getAvailableTasks = async (req, res, next) => {
+  try {
+    const allAvailableTasks = await Task.findAll({
+      where: { workingStatus: "waiting" },
+    });
+    res.json({ allAvailableTasks });
   } catch (err) {
     next(err);
   }
@@ -291,6 +303,17 @@ exports.delegateTaskToId = async (req, res, next) => {
       });
       res.json({ message: "Delegate done", taskToId });
     }
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getAllWorkingTasks = async (req, res, next) => {
+  try {
+    const allWorkingTasks = await Task.findAll({
+      where: { workingStatus: "active" },
+    });
+    res.json({ allWorkingTasks });
   } catch (err) {
     next(err);
   }

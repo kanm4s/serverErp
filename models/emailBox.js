@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
 
   EmailBox.associate = (models) => {
     EmailBox.belongsTo(models.User, {
-      as: "sender",
+      as: "senderEmailBox",
       foreignKey: {
         allowNull: false,
         name: "senderId",
@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: "RESTRICT",
     });
     EmailBox.belongsTo(models.User, {
-      as: "receiver",
+      as: "receiverEmailBox",
       foreignKey: {
         allowNull: false,
         name: "receiverId",

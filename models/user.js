@@ -65,51 +65,53 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   // link to EmailBox
-  User.associate = (models) => {
-    User.hasMany(models.EmailBox, {
-      as: "sender",
-      foreignKey: {
-        allowNull: false,
-        name: "senderId",
-      },
-      onDelete: "RESTRICT",
-      onUpdate: "RESTRICT",
-    });
-    User.hasMany(models.EmailBox, {
-      as: "receiver",
-      foreignKey: {
-        allowNull: false,
-        name: "receiverId",
-      },
-      onDelete: "RESTRICT",
-      onUpdate: "RESTRICT",
-    });
-  };
+  // User.associate = (models) => {
+
+  // };
 
   // link to chatlog
-  User.associate = (models) => {
-    User.hasMany(models.ChatLog, {
-      as: "sender",
-      foreignKey: {
-        allowNull: false,
-        name: "senderId",
-      },
-      onDelete: "RESTRICT",
-      onUpdate: "RESTRICT",
-    });
-    User.hasMany(models.ChatLog, {
-      as: "receiver",
-      foreignKey: {
-        allowNull: false,
-        name: "receiverId",
-      },
-      onDelete: "RESTRICT",
-      onUpdate: "RESTRICT",
-    });
-  };
+  // User.associate = (models) => {
+
+  // };
 
   // link to project-owner
   User.associate = (models) => {
+    User.hasMany(models.EmailBox, {
+      as: "senderEmailBox",
+      foreignKey: {
+        allowNull: false,
+        name: "senderId",
+      },
+      onDelete: "RESTRICT",
+      onUpdate: "RESTRICT",
+    });
+    User.hasMany(models.EmailBox, {
+      as: "receiverEmailBox",
+      foreignKey: {
+        allowNull: false,
+        name: "receiverId",
+      },
+      onDelete: "RESTRICT",
+      onUpdate: "RESTRICT",
+    });
+    User.hasMany(models.ChatLog, {
+      as: "senderChatLog",
+      foreignKey: {
+        allowNull: false,
+        name: "senderId",
+      },
+      onDelete: "RESTRICT",
+      onUpdate: "RESTRICT",
+    });
+    User.hasMany(models.ChatLog, {
+      as: "receiverChatLog",
+      foreignKey: {
+        allowNull: false,
+        name: "receiverId",
+      },
+      onDelete: "RESTRICT",
+      onUpdate: "RESTRICT",
+    });
     User.hasMany(models.ProjectOwner, {
       foreignKey: {
         allowNull: false,
@@ -118,51 +120,53 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "RESTRICT",
       onUpdate: "RESTRICT",
     });
+    User.hasMany(models.TaskOwner, {
+      as: "receiverTaskOwner",
+      foreignKey: {
+        allowNull: false,
+        name: "receiverId",
+      },
+      onDelete: "RESTRICT",
+      onUpdate: "RESTRICT",
+    });
+    User.hasMany(models.TaskOwner, {
+      as: "senderTaskOwner",
+      foreignKey: {
+        allowNull: false,
+        name: "senderId",
+      },
+      onDelete: "RESTRICT",
+      onUpdate: "RESTRICT",
+    });
+    User.hasMany(models.GoodjobNote, {
+      as: "senderGoodjobNote",
+      foreignKey: {
+        allowNull: false,
+        name: "senderId",
+      },
+      onDelete: "RESTRICT",
+      onUpdate: "RESTRICT",
+    });
+    User.hasMany(models.GoodjobNote, {
+      as: "receiverGoodjobNote",
+      foreignKey: {
+        allowNull: false,
+        name: "receiverId",
+      },
+      onDelete: "RESTRICT",
+      onUpdate: "RESTRICT",
+    });
   };
 
   // link to task-owner
-  User.associate = (models) => {
-    User.hasMany(models.TaskOwner, {
-      as: "receiver",
-      foreignKey: {
-        allowNull: false,
-        name: "receiverId",
-      },
-      onDelete: "RESTRICT",
-      onUpdate: "RESTRICT",
-    });
-    User.hasMany(models.TaskOwner, {
-      as: "sender",
-      foreignKey: {
-        allowNull: false,
-        name: "senderId",
-      },
-      onDelete: "RESTRICT",
-      onUpdate: "RESTRICT",
-    });
-  };
+  // User.associate = (models) => {
+
+  // };
 
   // link to Goodjob note
-  User.associate = (models) => {
-    User.hasMany(models.GoodjobNote, {
-      as: "sender",
-      foreignKey: {
-        allowNull: false,
-        name: "senderId",
-      },
-      onDelete: "RESTRICT",
-      onUpdate: "RESTRICT",
-    });
-    User.hasMany(models.GoodjobNote, {
-      as: "receiver",
-      foreignKey: {
-        allowNull: false,
-        name: "receiverId",
-      },
-      onDelete: "RESTRICT",
-      onUpdate: "RESTRICT",
-    });
-  };
+  // User.associate = (models) => {
+
+  // };
   // User.associate = (models) => {
 
   // };

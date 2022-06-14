@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: "RESTRICT",
     });
     TaskOwner.belongsTo(models.User, {
-      as: "receiver",
+      as: "receiverTaskOwner",
       foreignKey: {
         name: "receiverId",
       },
@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: "RESTRICT",
     });
     TaskOwner.belongsTo(models.User, {
-      as: "sender",
+      as: "senderTaskOwner",
       foreignKey: {
         allowNull: false,
         name: "senderId",

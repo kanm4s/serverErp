@@ -16,8 +16,7 @@ exports.connection = (io) => {
     console.log(socket.user);
     console.log(socket.id);
     console.log("A user is connected");
-    let clients = io.sockets;
-    // console.log(clients.sockets);
+
     const users = [];
     for (let [id, socket] of io.of("/").sockets) {
       users.push({
@@ -28,26 +27,18 @@ exports.connection = (io) => {
     console.log(users);
     socket.emit("users", users);
 
-    socket.join(socket.userID);
+    socket.on("join_room", (room) => {
+      socket.join(room.roomId);
+    });
 
-    // socket.on("message", ({ content, to }) => {
-    //   socket.to(to).to(socket.userID).emit("private message", {
-    //     content,
-    //     from: socket.userID,
-    //     to,
-    //   });
-    // });
-
-    socket.on("message", ({ userId, receiverName, chat }) => {
-      const receiverId = users.find((ele) => ele.username === receiverName);
-      console.log(receiverId);
-
-      console.log(`message from ${userId} to ${receiverName}: ${chat}`);
-      io.to(receiverId.userID).emit("messageResponse", {
-        userId,
-        receiverName,
-        chat,
-      });
+    socket.on("message", ({ userId, receiverName, chat, room }) => {
+      if (room.roomId) {
+        io.in(room.roomId).emit("messageResponse", {
+          userId,
+          receiverName,
+          chat,
+        });
+      }
     });
 
     socket.on("disconnect", () => {

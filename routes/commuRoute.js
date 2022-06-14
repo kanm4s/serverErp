@@ -12,5 +12,6 @@ router.delete("/deleteEmail/:id", commuController.deleteEmailById);
 router.delete("/postIt/:id", commuController.deletePostIt);
 router.get("/getAllMessage/:receiverId", commuController.getMessageById);
 router.post("/sendMessage/:receiverId", commuController.sendMessage);
+router.post("/getRoom", commuController.findRoom);
 
 module.exports = router;

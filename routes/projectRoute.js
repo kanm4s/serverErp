@@ -6,7 +6,10 @@ const router = express.Router();
 router.get("/", projectController.getAllProject);
 router.get("/tasks", projectController.getAllTask);
 router.get("/tasks/getTaskByUserId", projectController.getTaskReceiverByUserId);
+router.get("/tasks/getAvailableTasks", projectController.getAvailableTasks);
+
 router.get("/getProjectProgress", projectController.getProjectProgress);
+router.get("/getAllWorkingTasks", projectController.getAllWorkingTasks);
 router.get("/tasks/:id", projectController.getTaskById);
 router.get(
   "/:projectId/tasks",

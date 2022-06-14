@@ -1,6 +1,7 @@
 const createError = require("../utils/createError");
-const { User, EmailBox, ChatLog, PostIt } = require("../models");
+const { User, EmailBox, ChatLog, PostIt, RoomChat } = require("../models");
 const { Op } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
 
 exports.createEmail = async (req, res, next) => {
   try {
@@ -44,11 +45,11 @@ exports.getEmailsByUserId = async (req, res, next) => {
       include: [
         {
           model: User,
-          as: "receiver",
+          as: "receiverEmailBox",
         },
         {
           model: User,
-          as: "sender",
+          as: "senderEmailBox",
         },
       ],
     });
@@ -92,8 +93,8 @@ exports.getMessageById = async (req, res, next) => {
       attributes: ["id", "chat", "senderId", "receiverId", "createdAt"],
       order: [["createdAt", "DESC"]],
       include: [
-        { model: User, as: "sender", attributes: ["firstName"] },
-        { model: User, as: "receiver", attributes: ["firstName"] },
+        { model: User, as: "senderChatLog", attributes: ["firstName"] },
+        { model: User, as: "receiverChatLog", attributes: ["firstName"] },
       ],
     });
     res.json({ allMessage });
@@ -140,6 +141,35 @@ exports.deletePostIt = async (req, res, next) => {
     const { id } = req.params;
     await PostIt.destroy({ where: { id } });
     res.json({ message: "Delete postIt done" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.findRoom = async (req, res, next) => {
+  try {
+    const { userId2 } = req.body;
+    const { id } = req.user;
+
+    const room = await RoomChat.findOne({
+      where: {
+        [Op.or]: [
+          { userId1: id, userId2: userId2 },
+          { userId1: userId2, userId2: id },
+        ],
+      },
+    });
+
+    if (room) {
+      res.json({ room });
+    } else {
+      const room = await RoomChat.create({
+        roomId: uuidv4(),
+        userId1: id,
+        userId2: userId2,
+      });
+      res.json({ room });
+    }
   } catch (err) {
     next(err);
   }
